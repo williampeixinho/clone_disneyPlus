@@ -2,6 +2,16 @@ const gulp = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
 const plumber = require('gulp-plumber');
 const imagemin = require('gulp-imagemin');
+const uglify = require('gulp-uglify');
+
+
+function scripts() {
+    return gulp.src('./src/scripts/*.js')
+        .pipe(plumber())
+        .pipe(uglify())
+        .pipe(gulp.dest('./dist/js'));
+}
+
 
 // Função para compilar SASS
 function styles() {
@@ -19,14 +29,15 @@ function images() {
         .pipe(gulp.dest('./dist/images'));
 }
 
-// Função para assistir alterações nos arquivos
 function watchFiles() {
     gulp.watch('./src/styles/*.scss', styles);
     gulp.watch('./src/images/**/*', images);
+    gulp.watch('./src/scripts/*.js', scripts);
 }
 
 // Exporta as funções
 exports.styles = styles;
 exports.images = images;
+exports.scripts = scripts;
 exports.watch = watchFiles;
-exports.default = gulp.parallel(styles, images, watchFiles);
+exports.default = gulp.parallel(styles, images, scripts, gulp.series(watchFiles));
