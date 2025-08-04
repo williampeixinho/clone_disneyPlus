@@ -12,7 +12,6 @@ function scripts() {
         .pipe(gulp.dest('./dist/js'));
 }
 
-
 // Função para compilar SASS
 function styles() {
     return gulp.src('./src/styles/*.scss')
@@ -35,9 +34,14 @@ function watchFiles() {
     gulp.watch('./src/scripts/*.js', scripts);
 }
 
-// Exporta as funções
+// Tarefa para a Vercel (só compila e sai)
+exports.build = gulp.parallel(styles, images, scripts);
+
+// Tarefa para desenvolvimento local (compila e depois observa)
+exports.default = gulp.series(exports.build, watchFiles);
+
+// Você ainda pode exportar as outras se quiser executá-las individualmente
 exports.styles = styles;
 exports.images = images;
 exports.scripts = scripts;
 exports.watch = watchFiles;
-exports.default = gulp.parallel(styles, images, scripts, gulp.series(watchFiles));
